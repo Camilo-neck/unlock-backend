@@ -1,5 +1,5 @@
 from typing import List
-from src._supabase.supabase_client import supabase_client as sb
+from src.supa.client import sb
 
 from src.models.users import User
 

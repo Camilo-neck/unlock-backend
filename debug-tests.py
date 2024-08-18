@@ -1,4 +1,4 @@
-from src._supabase.supabase_client import supabase_client as sb
+from src.supa.client import sb
 
 response = sb.auth.admin.list_users()
 

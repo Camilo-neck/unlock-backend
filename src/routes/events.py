@@ -1,11 +1,13 @@
-from fastapi import APIRouter
-
+from fastapi import APIRouter, Request
 from typing import List
 from src.models.events import Event
-from src.controllers.events import get_all_events
+import src.controllers.events as events
+from src.utils.decorators import protected_route, public_route
 
 events_router = APIRouter()
 
-@events_router.get("/all")
-async def get_events() -> List[Event]:
-    return get_all_events()
+# Get all events of the admin-user
+@events_router.get("/")
+@protected_route()
+async def get_admin_events(request: Request) -> List[Event]:
+    return await events.get_admin_events(admin_id = request.state.user.id)

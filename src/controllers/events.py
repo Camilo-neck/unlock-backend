@@ -1,9 +1,9 @@
 from typing import List
-from src._supabase.supabase_client import supabase_client as sb
+from src.supa.client import sb
 
 from src.models.events import Event
 from src.schemas.events import EventCreate
 
-def get_all_events() -> List[Event]:
-    events = sb.from_("events").select("*").execute()
+async def get_admin_events(admin_id: str) -> List[Event]:
+    events = sb.from_("events").select("*").eq("admin_id", admin_id).execute()
     return events.data

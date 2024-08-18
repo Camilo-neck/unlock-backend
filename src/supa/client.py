@@ -3,4 +3,4 @@ from src.core.config import settings
 
 url: str = settings.supabase_url
 key: str = settings.supabase_key
-supabase_client: Client = create_client(url, key)
+sb: Client = create_client(url, key)
