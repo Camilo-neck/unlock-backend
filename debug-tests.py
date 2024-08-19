@@ -1,5 +1,8 @@
-from src.supa.client import sb
+import src.controllers.auth as auth
 
-response = sb.auth.admin.list_users()
+# response = auth.singin(
+#     email="jorozcove+unlock@unal.edu.co",
+#     password="Unlock@123"
+# )
 
-print(response)
+# print(response.session.access_token)

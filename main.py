@@ -5,6 +5,7 @@ app = FastAPI()
 
 # Import and register the API endpoints
 from src.routes.events import events_router
+from src.routes.auth import auth_router
 
 from src.supa.client import sb
 from src.middlewares.auth import CustomAuthMiddleware
@@ -14,6 +15,7 @@ app.add_middleware(CustomAuthMiddleware, supabase=sb)
 
 # Add the routers
 app.include_router(events_router, prefix="/events")
+app.include_router(auth_router, prefix="/auth")
 
 # Run the FastAPI app
 if __name__ == "__main__":

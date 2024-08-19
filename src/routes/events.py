@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, Request
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials
 
 from typing import List
 from src.models.events import Event
 from src.schemas.events import EventCreate
 import src.controllers.events as events
 
+from src.core.auth_scheme import auth_scheme
 from src.utils.decorators import protected_route, public_route
 
 events_router = APIRouter()
-auth_scheme = HTTPBearer()
 
 # Create a new event
 @events_router.post("/create")
