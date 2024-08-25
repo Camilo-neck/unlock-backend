@@ -1,28 +1,32 @@
-from typing import Optional
-from pydantic import BaseModel
 import uuid
+from typing import List
+from datetime import datetime
+from pydantic import BaseModel
+from gotrue.types import UserResponse, UserIdentity
 
 class User(BaseModel):
     id: uuid.UUID
     email: str
+    phone: str
     app_metadata: dict
     user_metadata: dict
-    aud: str
-    confirmation_sent_at: Optional[str]
-    recovery_sent_at: Optional[str]
-    email_change_sent_at: Optional[str]
-    new_email: Optional[str]
-    new_phone: Optional[str]
-    invited_at: Optional[str]
-    action_link: Optional[str]
-    phone: Optional[str]
-    created_at: str
-    confirmed_at: Optional[str]
-    email_confirmed_at: Optional[str]
-    phone_confirmed_at: Optional[str]
-    last_sign_in_at: Optional[str]
+    confirmed_at: datetime
     role: str
-    updated_at: str
-    identities: list
-    is_anonymous: bool
-    factors: Optional[str]  # Make factors optional
+    created_at: datetime
+    updated_at: datetime
+    # identities: List[UserIdentity]
+
+    @classmethod
+    def from_response(cls, response: UserResponse) -> "User":
+        return cls(
+            id=response.user.id,
+            email=response.user.email,
+            phone=response.user.phone,
+            app_metadata=response.user.app_metadata,
+            user_metadata=response.user.user_metadata,
+            confirmed_at=response.user.confirmed_at,
+            role=response.user.role,
+            created_at=response.user.created_at,
+            updated_at=response.user.updated_at,
+            # identities=response.user.identities
+        )
