@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_key: str
     supabase_db_password: str
+    supabase_service_role_key: str
 
     class Config:
         env_file = ".env"

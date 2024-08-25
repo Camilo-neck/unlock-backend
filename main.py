@@ -11,6 +11,7 @@ def create_app():
     from src.routes.events import events_router
     from src.routes.auth import auth_router
     from src.routes.users import users_router
+    from src.routes.bookings import bookings_router
 
     # Add middleware
     app.add_middleware(CustomAuthMiddleware, supabase=sb)
@@ -19,6 +20,8 @@ def create_app():
     app.include_router(auth_router, prefix="/auth")
     app.include_router(users_router, prefix="/users")
     app.include_router(events_router, prefix="/events")
+    app.include_router(bookings_router, prefix="/bookings")
+    app.include_router(devices_router, prefix="/devices")
 
     # Health check
     @app.get("/health")

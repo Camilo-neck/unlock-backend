@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, Request
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import HTTPAuthorizationCredentials, OAuth2PasswordRequestForm
+from src.core.auth_scheme import auth_scheme
+from src.utils.decorators import protected_route, public_route
+from typing import List
+import uuid
 
 from src.schemas.auth import Singin, Singup
 import src.controllers.auth as auth
-from src.utils.decorators import public_route
 
 auth_router = APIRouter()
 
