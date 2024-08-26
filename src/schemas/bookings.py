@@ -3,6 +3,6 @@ import uuid
 import datetime
 
 class BookingCreate(BaseModel):
-    event_id: uuid.UUID
-    user_id: uuid.UUID
-    device_id: uuid.UUID
+    event_id: str
+    user_id: str
+    device_id: str
