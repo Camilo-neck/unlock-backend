@@ -14,7 +14,7 @@ users_router = APIRouter()
 @users_router.get("/me")
 @protected_route()
 async def me(request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> User:
-    user_response = UserController.get_user()
+    user_response = UserController.get_user_by_id(request.state.user.id)
     return User.from_response(user_response)
 
 # Get user by id
