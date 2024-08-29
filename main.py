@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 import uvicorn
 
 def create_app():
@@ -16,6 +18,13 @@ def create_app():
 
     # Add middleware
     app.add_middleware(CustomAuthMiddleware, supabase=sb)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # Add the routers
     app.include_router(auth_router, prefix="/auth", tags=["auth"])
