@@ -2,9 +2,9 @@ from pydantic import BaseModel
 import uuid
 
 class AccessLog(BaseModel):
-    id: uuid.UUID
-    device_id: uuid.UUID
-    user_id: uuid.UUID
-    event_id: uuid.UUID
+    id: str
+    device_id: str
+    user_id: str
+    event_id: str
     access_at: str
     action: str

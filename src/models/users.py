@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from gotrue.types import UserResponse, UserIdentity
 
 class User(BaseModel):
-    id: uuid.UUID
+    id: str
     email: str
     phone: str
     app_metadata: dict

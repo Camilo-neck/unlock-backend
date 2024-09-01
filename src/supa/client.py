@@ -4,4 +4,10 @@ from src.core.config import settings
 url: str = settings.supabase_url
 # key: str = settings.supabase_key
 key: str = settings.supabase_service_role_key
-sb: Client = create_client(url, key)
+
+def init_supabase_client():
+    global sb
+    sb = create_client(url, key)
+    return sb
+
+sb: Client = init_supabase_client()

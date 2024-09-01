@@ -3,9 +3,9 @@ import uuid
 from datetime import datetime
 
 class Booking(BaseModel):
-    id: uuid.UUID
-    event_id: uuid.UUID
-    user_id: uuid.UUID
-    device_id: uuid.UUID
+    id: str
+    event_id: str
+    user_id: str
+    device_id: str
     checked_in: bool
     created_at: datetime

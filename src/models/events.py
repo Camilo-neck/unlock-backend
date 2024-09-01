@@ -2,8 +2,8 @@ from pydantic import BaseModel
 import uuid
 
 class Event(BaseModel):
-    id: uuid.UUID
-    admin_id: uuid.UUID
+    id: str
+    admin_id: str
     name: str
     description: str
     location: str

@@ -17,9 +17,9 @@ async def me(request: Request, token: HTTPAuthorizationCredentials = Depends(aut
     user_response = UserController.get_user_by_id(request.state.user.id)
     return User.from_response(user_response)
 
-# Get user by id
-@users_router.get("/{user_id}")
-@protected_route()
-async def get_user_by_id(user_id: uuid.UUID, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> User:
-    user_response = UserController.get_user_by_id(user_id)
-    return User.from_response(user_response)
+# # Get user by id
+# @users_router.get("/{user_id}")
+# @protected_route()
+# async def get_user_by_id(user_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> User:
+#     user_response = UserController.get_user_by_id(user_id)
+#     return User.from_response(user_response)

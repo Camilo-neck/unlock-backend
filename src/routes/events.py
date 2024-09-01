@@ -32,5 +32,5 @@ async def get_participant_events(request: Request, token: HTTPAuthorizationCrede
 # Get event by id
 @events_router.get("/{event_id}")
 @protected_route()
-async def get_event_by_id(event_id : uuid.UUID, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Event:
+async def get_event_by_id(event_id : str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Event:
     return EventController.verify_event_existence(event_id, request.state.user.id)

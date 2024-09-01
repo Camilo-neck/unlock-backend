@@ -14,13 +14,13 @@ devices_router = APIRouter()
 # Get device by id
 @devices_router.get("/{device_id}")
 @protected_route()
-async def get_device_by_id(device_id: uuid.UUID, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Device:
+async def get_device_by_id(device_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Device:
     return DeviceController.verify_device_existence(device_id, request.state.user.id)
 
 # Get devices by event
 @devices_router.get("/event/{event_id}")
 @protected_route()
-async def get_devices_by_event(event_id: uuid.UUID, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[Device]:
+async def get_devices_by_event(event_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[Device]:
     return DeviceController.get_devices_by_event(event_id)
 
 # Create a new device
