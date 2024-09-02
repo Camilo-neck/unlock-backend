@@ -83,8 +83,10 @@ class BookingController:
         for user_create in booking_create_users:
             try:
                 user = UserController.create_user(user_create, password="Unlock@123", email_confirm=False) #TODO: Send email and user create_user_and_send_verification_email
-            except AuthApiError:
+            except AuthApiError as e:
                 user = UserController.get_user_by_email(user_create.email)
+                if not user:
+                    raise HTTPException(status_code=400, detail=f"Error creating user {user_create.email}, Error: {e}")
             users.append(user)
         
         # Get all devices

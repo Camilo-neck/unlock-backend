@@ -9,25 +9,25 @@ from src.schemas.users import UserCreate
 class UserController:
 
     @staticmethod
-    def get_user_by_id(user_id: str) -> UserResponse:
+    def get_user_by_id(user_id: str) -> User:
         user_response = sb.auth.admin.get_user_by_id(user_id)
-        return user_response
+        return User.from_response(user_response)
     
     @staticmethod
-    def get_user_by_email(email: str) -> UserResponse:
+    def get_user_by_email(email: str) -> User:
         users_response = sb.auth.admin.list_users()
         for user in users_response:
             if user.email == email:
-                return user
+                return User.from_response(user)
         return None
     
     @staticmethod
-    def list_users() -> List[UserResponse]:
+    def list_users() -> List[User]:
         users_response = sb.auth.admin.list_users()
-        return users_response
+        return [User.from_response(user) for user in users_response]
     
     @staticmethod
-    def create_user(user_create: UserCreate, password: str, email_confirm: bool) -> UserResponse:
+    def create_user(user_create: UserCreate, password: str, email_confirm: bool) -> User:
         user_response = sb.auth.admin.create_user({
             'email': user_create.email,
             'password': password, # Temporary password
@@ -41,10 +41,10 @@ class UserController:
             },
         })
         
-        return user_response
+        return User.from_response(user_response)
     
     @staticmethod
-    def create_user_and_send_verification_email(user_create: UserCreate) -> UserResponse:
+    def create_user_and_send_verification_email(user_create: UserCreate) -> User:
         user_response = sb.auth.sign_in_with_otp({
             'email': user_create.email,
             'phone': user_create.phone,
@@ -57,4 +57,4 @@ class UserController:
             },
         })
         
-        return user_response
+        return User.from_response(user_response)
