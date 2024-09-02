@@ -5,7 +5,7 @@ from src.utils.decorators import protected_route, public_route
 from typing import List
 import uuid
 
-from src.models.bookings import Booking
+from src.models.bookings import Booking, BookingPopulated
 from src.schemas.bookings import BookingCreate 
 from src.controllers.bookings import BookingController
 
@@ -42,9 +42,10 @@ async def get_booking_by_id(booking_id: str, request: Request, token: HTTPAuthor
 # Get bookings by event
 @bookings_router.get("/event/{event_id}")
 @protected_route()
-async def get_bookings_by_event(event_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[Booking]:
+async def get_bookings_by_event(event_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[BookingPopulated]:
     EventController.verify_event_existence(event_id, request.state.user.id)
-    return BookingController.get_bookings_by_event(event_id)
+    bookings = BookingController.get_populated_bookings_by_event(event_id)
+    return bookings
 
 # Create a new booking
 @bookings_router.post("/create")

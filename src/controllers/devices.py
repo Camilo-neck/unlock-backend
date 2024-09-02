@@ -27,6 +27,11 @@ class DeviceController:
     def get_device_by_id(device_id: str) -> Device:
         device = devices_table.select("*").eq("id", device_id).execute()
         return Device(**device.data[0]) if device.data else None
+    
+    @staticmethod
+    def get_devices_by_ids(device_ids: List[str]) -> List[Device]:
+        devices = devices_table.select("*").in_("id", device_ids).execute()
+        return [Device(**device) for device in devices.data]
 
     @staticmethod
     def get_devices_by_event(event_id: str) -> List[Device]:

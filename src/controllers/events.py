@@ -46,6 +46,10 @@ class EventController:
     def get_event_by_id(event_id: str) -> Event:
         event = events_table.select("*").eq("id", event_id).execute()
         return Event(**event.data[0]) if event.data else None
+    @staticmethod
+    def get_events_by_ids(event_ids: List[str]) -> List[Event]:
+        events = events_table.select("*").in_("id", event_ids).execute()
+        return [Event(**event) for event in events.data]
 
     @staticmethod
     def event_exists(event_id: str, admin_id: str) -> bool:

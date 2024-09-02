@@ -6,7 +6,7 @@ from fastapi import HTTPException
 import random
 from gotrue.errors import AuthApiError
 
-from src.models.bookings import Booking
+from src.models.bookings import Booking, BookingPopulated   
 from src.schemas.bookings import BookingCreate
 from src.schemas.users import UserCreate
 
@@ -42,6 +42,18 @@ class BookingController:
     def get_bookings_by_event(event_id: str) -> List[Booking]:
         bookings = bookings_table.select("*").eq("event_id", event_id).execute()
         return [Booking(**booking) for booking in bookings.data]
+    
+    @staticmethod
+    def get_populated_bookings_by_event(event_id: str) -> List[BookingPopulated]:
+        bookings = bookings_table.select("*, events(*), devices(*)").eq("event_id", event_id).execute()
+        user_ids = [booking["user_id"] for booking in bookings.data]
+        users = UserController.get_users_by_ids(user_ids)
+        bookings_populated = []
+        for booking in bookings.data:
+            user = next(user for user in users if user.id == booking["user_id"])
+            bookings_populated.append(BookingPopulated(**booking, user=user, event=booking["events"], device=booking["devices"]))
+
+        return bookings_populated
 
     @staticmethod
     def get_bookings_by_device(device_id: str) -> List[Booking]:
@@ -116,5 +128,3 @@ class BookingController:
                 bookings.append(booking)
 
         return bookings
-    
-

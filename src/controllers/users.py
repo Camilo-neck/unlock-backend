@@ -14,6 +14,11 @@ class UserController:
         return User.from_response(user_response)
     
     @staticmethod
+    def get_users_by_ids(user_ids: List[str]) -> List[User]:
+        users_response = sb.auth.admin.list_users()
+        return [User.from_response(user) for user in users_response if user.id in user_ids]
+    
+    @staticmethod
     def get_user_by_email(email: str) -> User:
         users_response = sb.auth.admin.list_users()
         for user in users_response:
