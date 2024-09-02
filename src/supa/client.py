@@ -1,13 +1,22 @@
 from supabase import create_client, Client
 from src.core.config import settings
 
-url: str = settings.supabase_url
-# key: str = settings.supabase_key
-key: str = settings.supabase_service_role_key
+class SupabaseClient:
+    _instance = None
+    _client: Client = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(SupabaseClient, cls).__new__(cls)
+            cls._client = init_supabase_client()
+
+        return cls._instance
+    @property
+    def client(self):
+        return self._client   
+
 
 def init_supabase_client():
-    global sb
-    sb = create_client(url, key)
-    return sb
+    return create_client(settings.supabase_url, settings.supabase_service_role_key)   
 
-sb: Client = init_supabase_client()
+sb = SupabaseClient().client

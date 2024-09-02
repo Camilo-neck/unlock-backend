@@ -1,4 +1,4 @@
-from src.supa.client import sb, init_supabase_client
+from src.supa.client import init_supabase_client
 
 class AuthController:
     # @staticmethod
@@ -19,8 +19,8 @@ class AuthController:
     
     @staticmethod
     def get_access_token(email: str, password: str) -> str:
-        temp_sb = init_supabase_client()
-        response = temp_sb.auth.sign_in_with_password({
+        #We use a temporary client to get the access token to avoid overwriting the main client
+        response = init_supabase_client().auth.sign_in_with_password({
             "email": email,
             "password": password
         })
