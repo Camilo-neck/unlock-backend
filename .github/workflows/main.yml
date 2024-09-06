@@ -24,7 +24,7 @@ jobs:
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/unlock-backend:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/unlock-backend:${{ github.sha }}
 
-        - name: 'Deploy to Azure Container Instances'
+        - name: 'Deploy Node 1 to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
@@ -37,4 +37,18 @@ jobs:
             location: 'eastus'
             cpu: '2'
             memory: '4.0Gi'
+            ports: '8000'
+        - name: 'Deploy Node 2 to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ secrets.RESOURCE_GROUP }}
+            dns-name-label: 'unlock-backend2'
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/unlock-backend:${{ github.sha }}
+            registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            registry-username: ${{ secrets.REGISTRY_USERNAME }}
+            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            name: unlock-backend2
+            location: 'eastus'
+            cpu: '1'
+            memory: '2.5Gi'
             ports: '8000'
