@@ -42,11 +42,34 @@ class BookingController:
     def get_booking_by_id(booking_id: str) -> Booking:
         booking = bookings_table.select("*").eq("id", booking_id).execute()
         return Booking(**booking.data[0]) if booking.data else None
-
+    
+    @staticmethod
+    def get_populated_participation_booking(booking_id: str, user_id: str) -> BookingPopulated:
+        booking = bookings_table.select("*, events(*), devices(*)").eq("id", booking_id).eq("user_id", user_id).execute()
+        if not booking.data:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        user = UserController.get_user_by_id(user_id)
+        booking_data = booking.data[0]
+        print(booking_data)
+        return BookingPopulated(
+            **booking_data,
+            user=user,
+            event=booking_data["events"],
+            device=booking_data["devices"]
+        )
     @staticmethod
     def get_bookings_by_user(user_id: str) -> List[Booking]:
         bookings = bookings_table.select("*").eq("user_id", user_id).execute()
         return [Booking(**booking) for booking in bookings.data]
+    
+    @staticmethod
+    def get_populated_bookings_by_user(user_id: str) -> List[BookingPopulated]:
+        bookings = bookings_table.select("*, events(*), devices(*)").eq("user_id", user_id).execute()
+        user = UserController.get_user_by_id(user_id)
+        bookings_populated = []
+        for booking in bookings.data:
+            bookings_populated.append(BookingPopulated(**booking, user=user, event=booking["events"], device=booking["devices"]))
+        return bookings_populated
 
     @staticmethod
     def get_bookings_by_event(event_id: str) -> List[Booking]:

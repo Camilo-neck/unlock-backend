@@ -18,10 +18,16 @@ bookings_router = APIRouter()
 # Get my bookings
 @bookings_router.get("/me")
 @protected_route()
-async def get_my_bookings(request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[Booking]:
-    return BookingController.get_bookings_by_user(request.state.user.id)
+async def get_my_bookings(request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[BookingPopulated]:
+    return BookingController.get_populated_bookings_by_user(request.state.user.id)
 
-# Get booking by id
+# Get booking by id (participation)
+@bookings_router.get("/me/{booking_id}")
+@protected_route()
+async def get_booking_by_id(booking_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> BookingPopulated:
+    return BookingController.get_populated_participation_booking(booking_id, request.state.user.id)
+
+# Get booking by id (admin)
 @bookings_router.get("/{booking_id}")
 @protected_route()
 async def get_booking_by_id(booking_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Booking:
