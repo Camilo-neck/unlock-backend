@@ -60,3 +60,10 @@ async def create_booking(booking_create: BookingCreate, request: Request, token:
 async def create_bookings_and_users(event_id: str, users_create_list : list[UserCreate], request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> List[Booking]:
     EventController.verify_event_existence(event_id, request.state.user.id)
     return BookingController.create_bookings_and_users(event_id, users_create_list) 
+
+# Use a booking
+@bookings_router.post("/use/{booking_id}")
+@protected_route()
+async def use_booking(booking_id: str, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Booking:
+    BookingController.verify_booking_participation(booking_id, request.state.user.id)
+    return BookingController.use_booking(booking_id)

@@ -19,7 +19,7 @@ class EventController:
         if str(event.admin_id) != admin_id:
             raise HTTPException(status_code=401, detail="Unauthorized to access requested event")
         return event 
-
+    
     # Methods
     @staticmethod
     def get_admin_events(admin_id: str) -> List[Event]:
@@ -59,3 +59,4 @@ class EventController:
     def update_event_capacity(event_id: str, capacity: int) -> Event:
         event = events_table.update({"capacity": capacity}).eq("id", event_id).execute()
         return Event(**event.data[0])
+    

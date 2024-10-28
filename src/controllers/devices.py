@@ -10,7 +10,6 @@ from src.schemas.devices import DeviceCreate
 from src.controllers.events import EventController
 
 devices_table = sb.table("devices")
-events_table = sb.table("events")
 
 class DeviceController:
     # Dependencies

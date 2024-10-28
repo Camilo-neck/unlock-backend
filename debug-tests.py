@@ -4,6 +4,7 @@ from src.controllers.users import UserController
 from src.controllers.events import EventController
 from src.controllers.devices import DeviceController
 from src.controllers.bookings import BookingController
+from src.controllers.access import AccessController
 
 from src.schemas.users import UserCreate
 
@@ -27,6 +28,8 @@ from src.schemas.users import UserCreate
 #     user_create_list=user_create_list
 # )
 
-response = BookingController.get_populated_bookings_by_event("f2676266-c030-4d5e-b2a0-058ee93db610")
+# response = BookingController.get_populated_bookings_by_event("f2676266-c030-4d5e-b2a0-058ee93db610")
+
+response = AccessController.get_populated_accesses_by_event("01a31646-d81e-4f90-aebd-bbb7efa54089")
 
 print(response)

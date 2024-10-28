@@ -2,6 +2,7 @@ from typing import List
 import uuid
 from src.supa.client import sb
 from datetime import datetime
+from dateutil.parser import parse
 from fastapi import HTTPException
 import random
 from gotrue.errors import AuthApiError
@@ -9,10 +10,12 @@ from gotrue.errors import AuthApiError
 from src.models.bookings import Booking, BookingPopulated   
 from src.schemas.bookings import BookingCreate
 from src.schemas.users import UserCreate
+from src.schemas.access import AccessCreate
 
 from src.controllers.events import EventController
 from src.controllers.devices import DeviceController
 from src.controllers.users import UserController
+from src.controllers.access import AccessController
 
 bookings_table = sb.table("bookings")
 
@@ -26,6 +29,13 @@ class BookingController:
         # Check if user is admin of the booking's event
         EventController.verify_event_existence(booking.event_id, admin_id)
         return booking
+    
+    @staticmethod
+    def verify_booking_participation(booking_id: str, user_id: str) -> Booking:
+        booking = bookings_table.select("*").eq("id", booking_id).eq("user_id", user_id).execute()
+        if not booking.data:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        return Booking(**booking.data[0])
     
     # Methods
     @staticmethod
@@ -94,7 +104,7 @@ class BookingController:
         users = []
         for user_create in booking_create_users:
             try:
-                user = UserController.create_user(user_create, password="Unlock@123", email_confirm=False) #TODO: Send email and user create_user_and_send_verification_email
+                user = UserController.create_user(user_create, password="Unlock@123", email_confirm=True) #TODO: Send email and user create_user_and_send_verification_email
             except AuthApiError as e:
                 user = UserController.get_user_by_email(user_create.email)
                 if not user:
@@ -128,3 +138,36 @@ class BookingController:
                 bookings.append(booking)
 
         return bookings
+
+    @staticmethod
+    def use_booking(booking_id: str) -> Booking:
+        booking = BookingController.get_booking_by_id(booking_id)
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        
+        # Get event and check if the date is in between the event's start and end
+        event = EventController.get_event_by_id(booking.event_id)
+        now = datetime.now()
+        
+        # Ensure event start and end times are datetime objects
+        if isinstance(event.start_time, str):
+            event.start_time = parse(event.start_time)
+        if isinstance(event.end_time, str):
+            event.end_time = parse(event.end_time)
+        
+        if now < event.start_time or now > event.end_time:
+            raise HTTPException(status_code=400, detail="Event is not active")
+        
+        # Set booking as checked in and booked at
+        bookings_table.update({
+            "checked_in": True,
+        }).eq("id", booking_id).execute()
+
+        # Register access
+        AccessController.insert_access(AccessCreate(
+            event_id=booking.event_id,
+            user_id=booking.user_id,
+            device_id=booking.device_id
+        ))
+
+        return BookingController.get_booking_by_id(booking_id)
