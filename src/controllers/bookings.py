@@ -127,11 +127,13 @@ class BookingController:
         users = []
         for user_create in booking_create_users:
             try:
-                user = UserController.create_user(user_create, password="Unlock@123", email_confirm=True) #TODO: Send email and user create_user_and_send_verification_email
+                user = UserController.create_user(user_create, email_confirm=True, event_name=event.name)
             except AuthApiError as e:
                 user = UserController.get_user_by_email(user_create.email)
                 if not user:
                     raise HTTPException(status_code=400, detail=f"Error creating user {user_create.email}, Error: {e}")
+                else:
+                    UserController.send_event_added_email(user.email, event.name)
             users.append(user)
         
         # Get all devices
