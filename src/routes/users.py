@@ -7,6 +7,7 @@ import uuid
 
 from src.models.users import User
 from src.controllers.users import UserController
+from src.schemas.users import UserCreate
 
 users_router = APIRouter()
 
@@ -16,6 +17,11 @@ users_router = APIRouter()
 async def me(request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> User:
     user = UserController.get_user_by_id(request.state.user.id)
     return user
+
+@users_router.post("/create")
+@protected_route()
+async def create_user(user_create: UserCreate, request: Request, token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> User:
+    return UserController.create_user(user_create, email_confirm=True)
 
 # # Get user by id
 # @users_router.get("/{user_id}")
